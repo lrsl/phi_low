@@ -6,7 +6,7 @@
 /*   By: rroussel <rroussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 14:00:18 by rroussel          #+#    #+#             */
-/*   Updated: 2023/11/02 15:36:45 by rroussel         ###   ########.fr       */
+/*   Updated: 2023/11/02 18:22:40 by rroussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,29 +41,43 @@ void	*philos_acting(void *data_philo)
 	return (NULL);
 }
 
-void	until_death_or_full(t_params *parameters, \
-t_philo *philos, int *i, bool *dead_or_alive)
+int	starving(t_params *prm, t_philo *philos, int *i)
 {
-	while (parameters->alive_dead == ALIVE)
+	pthread_mutex_lock(&prm->check_time);
+	if ((get_time(prm) - philos[*i].last_meal) >= prm->time_death)
 	{
-		pthread_mutex_lock(&parameters->check_time);
-		if ((get_time(parameters) - philos[*i].last_meal) \
-		>= parameters->time_death)
+		pthread_mutex_unlock(&prm->check_time);
+		return (1);
+	}
+	pthread_mutex_unlock(&prm->check_time);
+	return (2);
+}
+
+void	until_death_or_full(t_params *prm, t_philo *philos, \
+int *i, bool *dead_or_alive)
+{
+	while (1)
+	{
+		pthread_mutex_lock(&prm->check_death);
+		if (prm->alive_dead == DEAD)
 		{
-			pthread_mutex_unlock(&parameters->check_time);
+			pthread_mutex_unlock(&prm->check_death);
 			break ;
 		}
-		pthread_mutex_unlock(&parameters->check_time);
-		pthread_mutex_lock(&parameters->check_all_ate);
-		if (parameters->nb_philos_full == parameters->nb_philos)
+		pthread_mutex_unlock(&prm->check_death);
+		if (starving(prm, philos, i) == 1)
+			break ;
+		usleep(1);
+		pthread_mutex_lock(&prm->check_all_ate);
+		if (prm->nb_philos_full == prm->nb_philos)
 		{
-			pthread_mutex_unlock(&parameters->check_all_ate);
+			pthread_mutex_unlock(&prm->check_all_ate);
 			*dead_or_alive = 1;
 			break ;
 		}
-		pthread_mutex_unlock(&parameters->check_all_ate);
+		pthread_mutex_unlock(&prm->check_all_ate);
 		*i += 1;
-		if (*i == parameters->nb_philos - 1 || parameters->nb_philos == 1)
+		if (*i == prm->nb_philos - 1 || prm->nb_philos == 1)
 			*i = 0;
 	}
 }
@@ -86,6 +100,7 @@ void	verif_status(t_params *parameters, t_philo *philos)
 	pthread_mutex_lock(&parameters->check_death);
 	parameters->alive_dead = DEAD;
 	pthread_mutex_unlock(&parameters->check_death);
+	usleep(100);
 }
 
 void	philos_dinning(t_params *parameters)

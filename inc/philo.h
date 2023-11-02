@@ -6,7 +6,7 @@
 /*   By: rroussel <rroussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 09:23:58 by rroussel          #+#    #+#             */
-/*   Updated: 2023/11/02 15:37:12 by rroussel         ###   ########.fr       */
+/*   Updated: 2023/11/02 17:38:57 by rroussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_params
 
 /* dinner.c */
 void				*philos_acting(void *data_philo);
+int					starving(t_params *prm, t_philo *philos, int *i);
 void				until_death_or_full(t_params *parameters, \
 					t_philo *philos, int *i, bool *dead_or_alive);
 void				verif_status(t_params *parameters, t_philo *philos);

@@ -6,7 +6,7 @@
 /*   By: rroussel <rroussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 10:04:36 by rroussel          #+#    #+#             */
-/*   Updated: 2023/11/02 15:01:42 by rroussel         ###   ########.fr       */
+/*   Updated: 2023/11/02 18:31:57 by rroussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,11 @@ t_params	*ft_parsing(int ac, char **av)
 	parameters->time_sleep = args_check(av[4], parameters);
 	if (parameters->time_sleep < 30)
 		error_parsing(84, parameters);
-	parameters->time_think = (parameters->time_death - parameters->time_eat \
-	- parameters->time_sleep) * 2 / 3;
+	if (parameters->nb_philos % 2 == 1)
+		parameters->time_think = ((parameters->time_eat) - \
+		(parameters->time_sleep)) + 2;
+	else
+		parameters->time_think = 0;
 	if (ac == 6)
 		parameters->nb_max_meals = args_check(av[5], parameters);
 	return (parameters);

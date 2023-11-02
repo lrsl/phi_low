@@ -6,7 +6,7 @@
 /*   By: rroussel <rroussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 13:19:59 by rroussel          #+#    #+#             */
-/*   Updated: 2023/11/02 15:04:43 by rroussel         ###   ########.fr       */
+/*   Updated: 2023/11/02 17:53:54 by rroussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_philo_sleeps(t_params *parameters, t_philo *philo)
 void	ft_philo_thinks(t_params *parameters, t_philo *philo)
 {
 	philo_writting(parameters, philo->id_philo, THINKS);
-	if (parameters->time_think > 15)
+	if (parameters->time_think > 1)
 		blocked_time(parameters, parameters->time_think);
 }
 
